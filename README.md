@@ -22,7 +22,9 @@ Key capabilities include directional counting across multiple lanes, real-time g
 
 ### Institution
 
-[![Universidad de Buenos Aires](figs/logos/uba_logo.png)](https://www.uba.ar/)
+<a href="https://www.uba.ar/">
+  <img src="figs/logos/uba_logo.png" alt="Universidad de Buenos Aires" width="200">
+</a>
 
 **Universidad de Buenos Aires (University of Buenos Aires)**
 
@@ -30,7 +32,9 @@ This project was completed as the capstone project for the [Graduate Specializat
 
 ### Collaboration
 
-[![Ente de la Movilidad de Rosario](figs/logos/emr_logo.png)](https://emr.gov.ar/)
+<a href="https://emr.gov.ar/">
+  <img src="figs/logos/emr_logo.png" alt="Ente de la Movilidad de Rosario" width="200">
+</a>
 
 **Ente de la Movilidad de Rosario (Rosario Mobility Authority)**
 
