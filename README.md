@@ -16,6 +16,20 @@ Key capabilities include directional counting across multiple lanes, real-time g
 ![Sample Output](figs/examples/annotated_frame_sample.png)
 *Real-time cyclist detection, tracking, and demographic classification with directional counting*
 
+## Implementation Repositories
+
+This research repository documents the methodology and findings. The complete implementation is organized across five interconnected repositories:
+
+| Repository | Purpose | Key Technologies |
+|------------|---------|------------------|
+| [**cctv-inference**](https://github.com/jcruz-ferreyra/cctv-inference) | Production inference pipeline for processing CCTV videos | PyTorch, Supervision, ByteTrack, YOLO/RFDETR |
+| [**detection-labelling**](https://github.com/jcruz-ferreyra/detection-labelling) | Dataset preparation for object detection training | SIFT, BYOL, Supervision |
+| [**detection-training**](https://github.com/jcruz-ferreyra/detection-training) | Training and evaluation of detection models | YOLO, RFDETR, MLflow |
+| [**classification-labelling**](https://github.com/jcruz-ferreyra/classification-labelling) | Dataset preparation for classification training | Supervision, OpenCV |
+| [**classification-training**](https://github.com/jcruz-ferreyra/classification-training) | Training and optimization of CNN classifiers | EfficientNet, ResNet, Optuna, MLflow |
+
+Each repository contains detailed documentation, configuration examples, and usage instructions.
+
 <br>
 
 ## Research Context
@@ -54,3 +68,4 @@ However, the manual methodology presents significant limitations:
 - **Safety constraints**: Urban security concerns prevent data collection in certain areas or times of day, limiting spatial and temporal coverage
 
 This context motivates the exploration of technological alternatives to automate cyclist censuses using existing infrastructure—specifically, the city's CCTV surveillance camera network. Reliable, accurate, and frequent cyclist mobility data is fundamental for planning adequate infrastructure, improving road safety, evaluating public policies, and promoting sustainable transportation. Computer vision-based automation represents a concrete opportunity to modernize data collection systems and advance toward more intelligent urban mobility management.
+
