@@ -77,7 +77,7 @@ The complete pipeline transforms raw CCTV footage into actionable cyclist census
 
 ---
 
-### 1. Detection Dataset Preparation ([link](https://github.com/jcruz-ferreyra/detection-labelling))
+### 1. Detection Dataset Preparation [↗️](https://github.com/jcruz-ferreyra/detection-labelling)
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/detection-labelling">
@@ -87,7 +87,7 @@ The complete pipeline transforms raw CCTV footage into actionable cyclist census
 
 Extracts and curates frames from CCTV videos for detection model training. Uses BYOL (Bootstrap Your Own Latent) self-supervised learning to sample diverse, representative frames, followed by SIFT-based deduplication to remove redundant images. The pipeline prioritizes two-wheeled vehicles and employs spatial distribution scoring to ensure balanced coverage across the frame.
 
-### 2. Detection Model Training (**[link](https://github.com/jcruz-ferreyra/detection-training)**)
+### 2. Detection Model Training [↗️](https://github.com/jcruz-ferreyra/detection-training)
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/detection-training">
@@ -97,7 +97,7 @@ Extracts and curates frames from CCTV videos for detection model training. Uses 
 
 Trains object detection models (YOLO v8/v11, RFDETR variants) on the prepared datasets. Includes multi-source dataset combination with class remapping, automatic format conversion (Pascal VOC → YOLO/COCO), and comprehensive evaluation with category-specific confidence thresholds. All experiments tracked via MLflow for reproducibility.
 
-### 3. Classification Dataset Preparation ([link](https://github.com/jcruz-ferreyra/classification-labelling))
+### 3. Classification Dataset Preparation [↗️](https://github.com/jcruz-ferreyra/classification-labelling)
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/classification-labelling">
@@ -107,7 +107,7 @@ Trains object detection models (YOLO v8/v11, RFDETR variants) on the prepared da
 
 Extracts person crops from detection datasets for gender classification training. Applies spatial filtering using polygon zones to isolate cyclists from pedestrians, automatically separates motorcyclists via IoU-based detection matching, and implements quality filtering based on minimum crop dimensions. Memory-efficient video-by-video processing handles large-scale datasets.
 
-### 4. Classification Model Training ([link](https://github.com/jcruz-ferreyra/classification-training))
+### 4. Classification Model Training [↗️](https://github.com/jcruz-ferreyra/classification-training)
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/classification-training">
@@ -117,7 +117,7 @@ Extracts person crops from detection datasets for gender classification training
 
 Trains CNN classifiers (EfficientNet B0/B3, ResNet 50/101) for gender classification with comprehensive hyperparameter optimization using Optuna. Key innovation: systematic threshold optimization revealing that default 0.5 thresholds are suboptimal—optimal thresholds discovered through test set evaluation significantly improve class balance (EfficientNet B0: 0.3, EfficientNet B3: 0.2, ResNet 50: 0.3).
 
-### 5. Inference Pipeline ([link](https://github.com/jcruz-ferreyra/cctv-inference))
+### 5. Inference Pipeline [↗️](https://github.com/jcruz-ferreyra/cctv-inference)
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/cctv-inference">
@@ -128,6 +128,7 @@ Trains CNN classifiers (EfficientNet B0/B3, ResNet 50/101) for gender classifica
 Production system that processes CCTV videos end-to-end. Integrates trained detection and classification models with ByteTrack multi-object tracking, performs cyclist identification via person-bicycle IoU matching, applies temporal weighting for robust gender classification across track lifetimes, and generates directional counts with bike lane compliance metrics. Designed for Google Colab with checkpoint-based resume capability.
 
 <br>
+
 
 
 
