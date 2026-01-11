@@ -121,7 +121,7 @@ Trains CNN classifiers (EfficientNet B0/B3, ResNet 50/101) for gender classifica
 
 <p align="center">
   <a href="https://github.com/jcruz-ferreyra/cctv-inference">
-    <img src="figs/pipeline/inference_pipeline.png" alt="Inference Pipeline" width="600">
+    <img src="figs/examples/annotated_frame_sample.png" alt="Inference Pipeline" width="600">
   </a>
 </p>
 
