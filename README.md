@@ -80,54 +80,91 @@ The complete pipeline transforms raw CCTV footage into actionable cyclist census
 ### 1. Detection Dataset Preparation [↗️](https://github.com/jcruz-ferreyra/detection-labelling)
 
 <p align="center">
-  <a href="https://github.com/jcruz-ferreyra/detection-labelling">
-    <img src="figs/pipeline/detection_dataset.png" alt="Detection Dataset Preparation" width="600">
-  </a>
+  <img src="figs/pipeline/detection_dataset.png" alt="Detection Dataset Preparation" width="600">
 </p>
 
-Extracts and curates frames from CCTV videos for detection model training. Uses BYOL (Bootstrap Your Own Latent) self-supervised learning to sample diverse, representative frames, followed by SIFT-based deduplication to remove redundant images. The pipeline prioritizes two-wheeled vehicles and employs spatial distribution scoring to ensure balanced coverage across the frame.
+Multi-stage pipeline for preparing detection datasets from CCTV videos. Extracts frames, performs intelligent sampling, removes duplicates, and generates training-ready annotations in multiple formats (YOLO, COCO). Designed to create high-quality, diverse datasets for urban vehicle detection tasks.
 
 ### 2. Detection Model Training [↗️](https://github.com/jcruz-ferreyra/detection-training)
 
 <p align="center">
-  <a href="https://github.com/jcruz-ferreyra/detection-training">
-    <img src="figs/pipeline/detection_training.png" alt="Detection Model Training" width="600">
-  </a>
+  <img src="figs/pipeline/detection_training.png" alt="Detection Model Training" width="600">
 </p>
 
-Trains object detection models (YOLO v8/v11, RFDETR variants) on the prepared datasets. Includes multi-source dataset combination with class remapping, automatic format conversion (Pascal VOC → YOLO/COCO), and comprehensive evaluation with category-specific confidence thresholds. All experiments tracked via MLflow for reproducibility.
+Complete training infrastructure for object detection models on urban CCTV footage. Combines multiple annotation sources, trains YOLO and RFDETR models with experiment tracking, and provides detailed evaluation metrics.
 
 ### 3. Classification Dataset Preparation [↗️](https://github.com/jcruz-ferreyra/classification-labelling)
 
 <p align="center">
-  <a href="https://github.com/jcruz-ferreyra/classification-labelling">
-    <img src="figs/pipeline/classification_dataset.png" alt="Classification Dataset Preparation" width="600">
-  </a>
+  <img src="figs/pipeline/classification_dataset.png" alt="Classification Dataset Preparation" width="600">
 </p>
 
-Extracts person crops from detection datasets for gender classification training. Applies spatial filtering using polygon zones to isolate cyclists from pedestrians, automatically separates motorcyclists via IoU-based detection matching, and implements quality filtering based on minimum crop dimensions. Memory-efficient video-by-video processing handles large-scale datasets.
+Extracts and organizes image crops from object detection datasets for classification tasks. Focuses on extracting people detections with spatial filtering and automatic motorcyclist separation. Designed to create balanced, clean classification datasets from existing detection annotations.
 
 ### 4. Classification Model Training [↗️](https://github.com/jcruz-ferreyra/classification-training)
 
 <p align="center">
-  <a href="https://github.com/jcruz-ferreyra/classification-training">
-    <img src="figs/pipeline/classification_training.png" alt="Classification Model Training" width="600">
-  </a>
+  <img src="figs/pipeline/classification_training.png" alt="Classification Model Training" width="600">
 </p>
 
-Trains CNN classifiers (EfficientNet B0/B3, ResNet 50/101) for gender classification with comprehensive hyperparameter optimization using Optuna. Key innovation: systematic threshold optimization revealing that default 0.5 thresholds are suboptimal—optimal thresholds discovered through test set evaluation significantly improve class balance (EfficientNet B0: 0.3, EfficientNet B3: 0.2, ResNet 50: 0.3).
+Complete training infrastructure for CNN classification models on cropped detection images. Combines multiple image sources, performs hyperparameter optimization, trains EfficientNet and ResNet models with experiment tracking, and evaluates with threshold optimization.
 
 ### 5. Inference Pipeline [↗️](https://github.com/jcruz-ferreyra/cctv-inference)
 
 <p align="center">
-  <a href="https://github.com/jcruz-ferreyra/cctv-inference">
-    <img src="figs/examples/annotated_frame_sample.png" alt="Inference Pipeline" width="600">
-  </a>
+  <img src="figs/examples/annotated_frame_sample.png" alt="Inference Pipeline" width="600">
 </p>
 
-Production system that processes CCTV videos end-to-end. Integrates trained detection and classification models with ByteTrack multi-object tracking, performs cyclist identification via person-bicycle IoU matching, applies temporal weighting for robust gender classification across track lifetimes, and generates directional counts with bike lane compliance metrics. Designed for Google Colab with checkpoint-based resume capability.
+Offline CCTV video processing pipeline that detects, tracks, and counts vehicles while capturing cyclist gender demographics and bike lane compliance data. Designed for urban transportation research and planning.
 
 <br>
+
+## Results
+
+### Evaluation Methodology
+
+Model performance was evaluated on test datasets derived from CCTV footage not used during training, ensuring assessment of generalization to truly unseen data. For detection evaluation, only the front portion of frames (approximately 50 meters depth) was used for testing, matching the expected operational depth in production deployment.
+
+Detection models were evaluated on the vehicle categories used by the Ente de la Movilidad for census operations: person, bicycle, motorcycle, bus, and car-type (aggregating car, truck, and the newly introduced van class).
+
+---
+
+### Detection Performance
+
+<p align="center">
+  <img src="figs/results/detection_results.png" alt="Detection Model Performance" width="700">
+</p>
+
+The trained detection model significantly outperforms the baseline (out-of-the-box YOLOv8m) across most categories, with substantial improvement in the primary class of interest: bicycles. The trained model achieves similar or higher mAP@50 and mAP@95 scores for person, motorcycle, and bus detections.
+
+Performance for the car-type category is lower than baseline, primarily due to the introduction of the van class with limited representation in the training dataset. This causes occasional misclassification between van and the pre-existing car class from the baseline model. However, these errors do not impact current institutional requirements, and the van class introduction establishes groundwork for future project iterations. Additional analysis is available in the [full report](reports/cyclist_census_[sp].pdf) (Spanish).
+
+---
+
+### Classification Performance
+
+<p align="center">
+  <img src="figs/results/classification_results.png" alt="Gender Classification Performance - ResNet50" width="700">
+</p>
+
+The ResNet50 model was selected for deployment based on its optimal balance between classification performance and inference speed. A key methodological contribution involved adjusting the decision threshold on the validation set to balance per-class recall rather than simply maximizing macro F1 score. In binary classification, optimizing for averaged metrics can mask significant performance disparities between classes—a model might achieve 95% recall on males but only 70% on females (incorreclty identifying the remaining 30% as males) while maintaining acceptable macro scores. Such imbalance would systematically bias census data, overcounting one demographic group. Threshold tuning ensures errors distribute evenly across both classes, producing unbiased demographic estimates.
+
+Threshold optimization revealed that all models required thresholds shifted toward the male class extreme, indicating that male classification is less challenging—likely due to lower variance in appearance and clothing characteristics. The deployed ResNet50 model achieves approximately 87% recall for both gender classes, ensuring balanced performance that supports unbiased census data generation.
+
+---
+
+### Inference Demonstration
+
+<p align="center">
+  <video src="figs/results/inference_result.mp4" width="700" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
+
+[Video caption]
+
+---
+
 
 
 
