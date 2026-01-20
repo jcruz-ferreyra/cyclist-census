@@ -156,14 +156,15 @@ Threshold optimization revealed that all models required thresholds shifted towa
 ### Inference Demonstration
 
 <p align="center">
-  <video src="figs/results/inference_result.mp4" width="700" controls>
-    Your browser does not support the video tag.
-  </video>
+  <a href="https://youtu.be/M-iC4pfRFGE" title="Cyclist Census - Real-Time CCTV Processing">
+    <img src="figs/examples/cover.png" alt="Cyclist Census Inference Demo" width="600">
+  </a>
 </p>
 
-[Video caption]
+*Real-time cyclist census generation showing object detection, multi-object tracking with persistent IDs, gender classification, directional counting across multiple traffic lanes, and bike lane compliance tracking. Click the image above to watch the full demonstration video. The system processes CCTV footage to produce temporal count data aggregated at 15-minute intervals.*
 
 ---
+
 
 
 
